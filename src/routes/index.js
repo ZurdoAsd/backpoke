@@ -61,9 +61,7 @@ const getPokemonDb = async () => {
       height: e.height,
       weight: e.weight,
       sprite: e.sprite,
-      types: e.types.map(e => e.name + " "),
-
-    }) 
+      types: e.types.map(e => e.name + " "),}) 
   })
   return aux;
 };
@@ -120,14 +118,16 @@ res.json({msg: "pokemon creado"})
 });
 
 router.get("/types", async (req, res) => {
-Types.findAll().then(resp =>res.send(resp)).catch(e=>console.log(e))
+Types.findAll()
+.then(resp =>res.send(resp))
+.catch(e=>console.log(e))
 });
 
 
-router.put("pokemons/:id", async(req, res) => {
-  const {id} = req.params
-const infodb = await Pokemon.findOne({where: {id: id}})
+router.put("/pokemons/:id", async(req, res) => {
 try {
+ const {id} = req.params
+const infodb = await Pokemon.findOne({where: {id: id}})
 await infodb.update({
   name: req.body.name,
   hp: req.body.hp,
@@ -137,28 +137,23 @@ await infodb.update({
   height: req.body.height,
   weight: req.body.weight,
   sprite: req.body.sprite,
-  types: req.body.types.map(e => e.name + " "),
+  types: req.body.types
 })
-req.body.types.forEach(async (e) => {
-  let typesDB = await Types.findAll({ where: { name: e } });
-  await infodb.setTypes(typesDB);
-});
-
 res.send(infodb);
 } catch (error) {
   console.log(error);
 }
 })
 
-router.delete("pokemons/:id", async(req, res) => {
+router.delete("/pokemons/:id", async(req, res) => {
       try {
         const { id } = req.params;
         const pokemonToDelete = await Pokemon.findByPk(id);
         if (pokemonToDelete) {
           await pokemonToDelete.destroy();
-          return res.send("Pokemon Borrado!");
+          return res.send("Pokemon Borrado");
         }
-        res.status(404).send("Pokemon no encontrado.");
+        res.status(404).send("Pokemon no encontrado");
       } catch (error) {
         res.status(400).send(error);
       }
