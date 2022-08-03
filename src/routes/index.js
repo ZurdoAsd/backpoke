@@ -2,12 +2,10 @@ const { Router } = require("express");
 const { Pokemon, Types } = require("../db");
 const axios = require("axios");
 // Importar todos los routers;
-// Ejemplo: const authRouter = require('./auth.js');
 
 const router = Router();
 
 // Configurar los routers
-// Ejemplo: router.use('/auth', authRouter);
 
 const getAllPokemonApi = async () => {
   try {
@@ -38,7 +36,8 @@ const getAllPokemonApi = async () => {
 };
 
 const getPokemonDb = async () => {
-  const dbPoke = await Pokemon.findAll({
+  try {
+      const dbPoke = await Pokemon.findAll({
     include: {
       model: Types,
       attributes: ["name"],
@@ -47,9 +46,7 @@ const getPokemonDb = async () => {
       },
     },
   });
-
    aux = []
-
   dbPoke.forEach(e=>{
     aux.push({
       id: e.id,
@@ -64,12 +61,23 @@ const getPokemonDb = async () => {
       types: e.types.map(e => e.name + " "),}) 
   })
   return aux;
+  } catch (error) {
+    console.log(error)
+  }
+
 };
 
 const AllPoke = async () => {
-  const apiPokemon = await getAllPokemonApi();
-  const dbPokemon = await getPokemonDb();
-  return apiPokemon.concat(dbPokemon);
+try {
+   let allinfo = Promise.all([getPokemonDb(),getAllPokemonApi()]).then(
+    (res) => {
+     return [...res[0], ...res[1]];
+    }
+  );
+ return allinfo
+} catch (error) {
+console.log(error)
+}
 };
 
 router.get("/pokemons", async (req, res) => {
@@ -106,15 +114,18 @@ router.get("/pokemons/:id", async (req, res) => {
 });
 
 router.post("/pokemons", async (req, res) => {
-
-const {name,hp,attack,defense,speed,height,weight,sprite,types}= req.body
+try {
+  const {name,types,hp,attack,defense,speed,height,weight,sprite}= req.body
 const nuevoPoke = await Pokemon.create({
     name,hp,attack,defense,speed,height,weight,sprite
 })
- 
+ console.log(types)
 const typedb = await Types.findAll({ where:{name:types} })
 nuevoPoke.addTypes(typedb)
 res.json({msg: "pokemon creado"})
+} catch (error) {
+  console.log(error)
+}
 });
 
 router.get("/types", async (req, res) => {
@@ -124,41 +135,90 @@ Types.findAll()
 });
 
 
-router.put("/pokemons/:id", async(req, res) => {
-try {
- const {id} = req.params
-const infodb = await Pokemon.findOne({where: {id: id}})
-await infodb.update({
-  name: req.body.name,
-  hp: req.body.hp,
-  attack: req.body.attack,
-  defense: req.body.defense,
-  speed: req.body.speed,
-  height: req.body.height,
-  weight: req.body.weight,
-  sprite: req.body.sprite,
-  types: req.body.types
-})
-res.send(infodb);
-} catch (error) {
-  console.log(error);
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+router.post("/pokemon2", async (req, res,next)=>{
+
+  try {
+    const{name,hp,defense,attack, height,sprite, speed,weight}=req.body
+
+const newPoke= await Pokemon.create({name,hp,defense,attack, height,sprite, speed,weight})
+
+
+
+res.json(newPoke)
+  } catch (error) {
+    console.log(error)
+  }
+
+
+
+
+
 })
 
-router.delete("/pokemons/:id", async(req, res) => {
-      try {
-        const { id } = req.params;
-        const pokemonToDelete = await Pokemon.findByPk(id);
-        if (pokemonToDelete) {
-          await pokemonToDelete.destroy();
-          return res.send("Pokemon Borrado");
-        }
-        res.status(404).send("Pokemon no encontrado");
-      } catch (error) {
-        res.status(400).send(error);
-      }
-  }
-)
+
+
+
+
+
+
 
 
 
