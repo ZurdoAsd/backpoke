@@ -6,9 +6,7 @@ const {
   DB_USER, DB_PASSWORD, DB_HOST,
 } = process.env;
 
-
 let sequelize = undefined;
-
 if (process.env.DATABASE_URL) {
   // the application is executed on Heroku ... use the postgres database
   sequelize = new Sequelize(process.env.DATABASE_URL, {
@@ -24,16 +22,12 @@ if (process.env.DATABASE_URL) {
     native: false
   });
 }else {
-
  sequelize = new Sequelize(`postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/pokemon`, {
   logging: false, 
   native: false, 
   define: {timestamps: false}
 })
 };
-
-
-
 
 // const sequelize = new Sequelize(`postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/pokemon`, {
 //   logging: false, // set to console.log to see the raw SQL queries
