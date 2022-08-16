@@ -39,7 +39,7 @@ const getAllPokemonApi = async () => {
 
 
 // Syncing all the models at once.
-conn.sync({ force: false }).then(async () => {
+conn.sync({ force: true }).then(async () => {
   server.listen(PORT, async () => {
     await precarga();
     await getAllPokemonApi();
