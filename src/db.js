@@ -8,7 +8,6 @@ const {
 
 let sequelize = undefined;
 if (process.env.DATABASE_URL) {
-  // the application is executed on Heroku ... use the postgres database
   sequelize = new Sequelize(process.env.DATABASE_URL, {
     dialect: 'postgres',
     protocol: 'postgres',
@@ -18,7 +17,7 @@ if (process.env.DATABASE_URL) {
         rejectUnauthorized: false,
       },
     },
-    logging: false, // set to console.log to see the raw SQL queries
+    logging: false,
     native: false
   });
 }else {
@@ -29,10 +28,6 @@ if (process.env.DATABASE_URL) {
 })
 };
 
-// const sequelize = new Sequelize(`postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/pokemon`, {
-//   logging: false, // set to console.log to see the raw SQL queries
-//   native: false, // lets Sequelize know we can use pg-native for ~30% more speed
-// });
 const basename = path.basename(__filename);
 const modelDefiners = [];
 

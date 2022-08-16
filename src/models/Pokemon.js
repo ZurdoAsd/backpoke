@@ -1,3 +1,4 @@
+const { INTEGER } = require('sequelize');
 const { DataTypes } = require('sequelize');
 // Exportamos una funcion que define el modelo
 // Luego le injectamos la conexion a sequelize.
@@ -5,8 +6,9 @@ module.exports = (sequelize) => {
   // defino el modelo
   sequelize.define('pokemon', {
     id:{
-      type:DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
+      // type:DataTypes.UUID,
+      // defaultValue: DataTypes.UUIDV4,
+      type:INTEGER,
       primaryKey:true,
       allowNull: false
     },
@@ -35,7 +37,14 @@ module.exports = (sequelize) => {
     sprite: {
       type: DataTypes.STRING,
       allowNull: true,
-   
+    },
+    shiny: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    created: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
   },
   {
